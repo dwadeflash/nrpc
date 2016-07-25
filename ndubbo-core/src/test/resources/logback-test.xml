@@ -1,0 +1,19 @@
+<configuration>
+	<property name="LOG_HOME" value="/data/tomcat-amp/console/logs/" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>[%d %-5level %thread %c:%L] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="org.apache" level="warn" additivity="true" />
+	<logger name="org.hibernate" level="error" additivity="true" />
+	<logger name="net.sf.ehcache" level="warn" additivity="true" />
+	<logger name="freemarker" level="warn" additivity="true" />
+
+	<root level="debug">
+		<appender-ref ref="STDOUT" />
+	</root>
+
+</configuration>

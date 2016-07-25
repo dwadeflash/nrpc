@@ -5,10 +5,10 @@ import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
-public class InterfaceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+public class ServiceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 	
 	protected Class<?> getBeanClass(Element element) {  
-        return ProxyInterface.class;  
+        return ProxyService.class;  
     }
 	
 	public void doParse(Element element, BeanDefinitionBuilder bean) {
@@ -17,4 +17,5 @@ public class InterfaceBeanDefinitionParser extends AbstractSingleBeanDefinitionP
 			bean.addPropertyValue("interfaceName", interfaceName);
 		}
     }
+
 }

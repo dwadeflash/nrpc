@@ -6,7 +6,14 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://dwade.github.com/schema/nrpc
        http://dwade.github.com/schema/nrpc/nrpc.xsd">
+       
+    <bean id="npcServerHandler" class="com.github.dwade.ndubbo.core.server.NpcServerHandler" />
 
-     <nrpc:interface interface="com.github.dwade.ndubbo.core.service.IHelloWorld" id="helloClient" />
+    <bean id="server" class="com.github.dwade.ndubbo.core.server.NpcServer">
+    	<property name="port" value="8090" />
+    	<property name="npcServerHandler" ref="npcServerHandler" />
+    </bean>
+
+    <nrpc:service interface="com.github.dwade.ndubbo.core.service.HelloWorld" id="helloService" />
      
 </beans>
