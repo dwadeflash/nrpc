@@ -1,6 +1,7 @@
 package com.github.dwade.ndubbo.core.client;
 
-import com.github.dwade.ndubbo.core.service.InvokeInfo;
+import com.github.dwade.ndubbo.core.InvokeInfo;
+import com.github.dwade.ndubbo.core.WrapppedResult;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -9,10 +10,11 @@ public class NpcClientHandler extends ChannelInboundHandlerAdapter {
 	
 	private InvokeInfo info;
 	
-	private Object result;
-
-	public NpcClientHandler(InvokeInfo info, Object result) {
+	private WrapppedResult result;
+	
+	public NpcClientHandler(InvokeInfo info, WrapppedResult result) {
 		this.info = info;
+		this.result = result;
 	}
 
 	@Override
@@ -28,8 +30,9 @@ public class NpcClientHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		System.out.println(msg);
-		result = msg;
+		System.out.println("Result:" + msg);
+		result.setResult(msg);
+		ctx.channel().close();
 	}
 
 }

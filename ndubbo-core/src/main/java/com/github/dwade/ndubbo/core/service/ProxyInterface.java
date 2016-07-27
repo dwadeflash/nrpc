@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.github.dwade.ndubbo.core.InvokeInfo;
+import com.github.dwade.ndubbo.core.WrapppedResult;
 import com.github.dwade.ndubbo.core.client.NpcClient;
 
 import net.sf.cglib.proxy.Enhancer;
@@ -20,7 +22,9 @@ public class ProxyInterface<T> implements MethodInterceptor, FactoryBean<T>, Ini
 	@Override
 	public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
 		InvokeInfo info = new InvokeInfo(interfaceName, method.getName(), args);
-		return new NpcClient("localhost", 8090, info).start();
+		WrapppedResult result = new WrapppedResult();
+		new NpcClient("localhost", 8090, info, result).start();
+		return result.getResult();
 	}
 
 	@SuppressWarnings("unchecked")

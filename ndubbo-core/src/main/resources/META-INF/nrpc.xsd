@@ -20,7 +20,7 @@
         <xsd:complexType>  
             <xsd:complexContent>  
                 <xsd:extension base="beans:identifiedType">  
-                    <xsd:attribute name="interface" type="xsd:string" />  
+                    <xsd:attribute name="interface" type="xsd:string" />
                 </xsd:extension>  
             </xsd:complexContent>  
         </xsd:complexType>  
