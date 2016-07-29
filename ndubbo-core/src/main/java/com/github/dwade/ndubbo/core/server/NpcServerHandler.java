@@ -1,29 +1,22 @@
 package com.github.dwade.ndubbo.core.server;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import com.github.dwade.ndubbo.core.InvokeInfo;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.util.concurrent.GlobalEventExecutor;
 
-public class NpcServerHandler extends ChannelInboundHandlerAdapter implements ApplicationContextAware {
+public class NpcServerHandler extends ChannelInboundHandlerAdapter {
 
-	private static ApplicationContext applicationContext;
+	private ApplicationContext applicationContext;
 	
-	private static ChannelGroup group =  new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		NpcServerHandler.applicationContext = applicationContext;
+	
+	public NpcServerHandler(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -31,7 +24,12 @@ public class NpcServerHandler extends ChannelInboundHandlerAdapter implements Ap
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		InvokeInfo info = (InvokeInfo) msg;
 		Class interfaceClass = Class.forName(info.getInterfaceName());
-		Object bean = applicationContext.getBean(interfaceClass);
+		Map<String, Object> beans = applicationContext.getBeansOfType(interfaceClass);
+		/**
+		 * TODO 使用ref配置代理的bean之后，无法获取代理的FactoryBean了，
+		 * 这样每次调用的时候，相当于直接使用了真正的bean，代理失去了意义
+		 */
+		Object bean = beans.values().toArray()[0];
 		for (Method method : interfaceClass.getDeclaredMethods()) {
 			if (info.getMethodName().equals(method.getName())) {
 				Object result = method.invoke(bean, info.getArgs());
@@ -50,7 +48,6 @@ public class NpcServerHandler extends ChannelInboundHandlerAdapter implements Ap
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		System.out.println("connected...");
-		group.add(ctx.channel());
     }
 	
 	@Override

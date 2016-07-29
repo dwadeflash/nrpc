@@ -7,6 +7,16 @@
     elementFormDefault="qualified"   
     attributeFormDefault="unqualified">  
     <xsd:import namespace="http://www.springframework.org/schema/beans" />  
+    <xsd:element name="zookeeper">
+        <xsd:complexType>  
+            <xsd:complexContent>  
+                <xsd:extension base="beans:identifiedType">  
+                    <xsd:attribute name="address" type="xsd:string" />
+                    <xsd:attribute name="port" type="xsd:string" />
+                </xsd:extension>  
+            </xsd:complexContent>  
+        </xsd:complexType>  
+    </xsd:element>
     <xsd:element name="interface">
         <xsd:complexType>  
             <xsd:complexContent>  
@@ -21,6 +31,7 @@
             <xsd:complexContent>  
                 <xsd:extension base="beans:identifiedType">  
                     <xsd:attribute name="interface" type="xsd:string" />
+                    <xsd:attribute name="ref" type="xsd:string" />
                 </xsd:extension>  
             </xsd:complexContent>  
         </xsd:complexType>  

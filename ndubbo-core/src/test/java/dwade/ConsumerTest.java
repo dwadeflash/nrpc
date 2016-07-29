@@ -9,9 +9,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.dwade.ndubbo.core.service.IHelloWorld;
 
-/**
- * Created by lenovo on 2015/5/11.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:nrpc-consumer.xml")
 public class ConsumerTest {

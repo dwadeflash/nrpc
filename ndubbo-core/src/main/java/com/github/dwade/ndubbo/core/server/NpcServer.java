@@ -1,5 +1,8 @@
 package com.github.dwade.ndubbo.core.server;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -15,13 +18,21 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
-public class NpcServer {
+public class NpcServer implements ApplicationContextAware{
+	
+	private static ApplicationContext applicationContext;
 	
 	private int port;
 	
     public void setPort(int port) {
         this.port = port;
     }
+    
+    @Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		NpcServer.applicationContext = applicationContext;
+	}
     
     public void run() throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
@@ -37,7 +48,7 @@ public class NpcServer {
 							pipeline.addLast("encoder", new ObjectEncoder());
 							pipeline.addLast("decoder",
 									new ObjectDecoder(ClassResolvers.cacheDisabled(this.getClass().getClassLoader())));
-							pipeline.addLast("handler", new NpcServerHandler());
+							pipeline.addLast("handler", new NpcServerHandler(applicationContext));
 						}
              })
              .option(ChannelOption.SO_BACKLOG, 128)          // (5)

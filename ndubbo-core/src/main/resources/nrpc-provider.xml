@@ -7,10 +7,22 @@
        http://dwade.github.com/schema/nrpc
        http://dwade.github.com/schema/nrpc/nrpc.xsd">
        
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="locations">
+    		<list>
+    			<value>classpath:config/config.properties</value>
+    		</list>
+    	</property>
+    </bean>
+    
     <bean id="server" class="com.github.dwade.ndubbo.core.server.NpcServer">
     	<property name="port" value="8090" />
     </bean>
+    
+    <bean id="helloService" class="com.github.dwade.ndubbo.core.service.HelloWorld" />
+    
+    <nrpc:zookeeper address="127.0.0.1" port="2181" />
 
-    <nrpc:service interface="com.github.dwade.ndubbo.core.service.HelloWorld" id="helloService" />
+    <nrpc:service interface="com.github.dwade.ndubbo.core.service.IHelloWorld" ref="helloService" id="hello"/>
      
 </beans>
