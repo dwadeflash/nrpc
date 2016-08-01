@@ -1,4 +1,4 @@
-package com.github.dwade.ndubbo.core.server;
+package com.github.dwade.ndubbo.server;
 
 import java.lang.reflect.Method;
 import java.util.Map;

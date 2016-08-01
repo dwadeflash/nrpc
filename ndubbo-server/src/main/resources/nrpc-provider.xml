@@ -18,14 +18,20 @@
     	</property>
     </bean>
     
-    <bean id="server" class="com.github.dwade.ndubbo.core.server.NpcServer">
-    	<property name="port" value="8090" />
-    </bean>
+    <bean class="com.github.dwade.ndubbo.core.ServerUtils" />
     
     <bean id="helloService" class="com.github.dwade.ndubbo.core.service.HelloWorld" />
+
+    <bean id="server" class="com.github.dwade.ndubbo.server.NpcServer">
+    	<property name="port" value="8090" />
+    </bean>
+	
+	<bean id="zkServiceRegistrator" class="com.github.dwade.ndubbo.server.zk.ZkServiceRegistrator" />    
     
     <nrpc:zookeeper address="127.0.0.1" port="2181" />
 
-    <nrpc:service interface="com.github.dwade.ndubbo.core.service.IHelloWorld" ref="helloService" id="hello"/>
+    <nrpc:service interface="com.github.dwade.ndubbo.core.service.IHelloWorld" ref="helloService" id="hello">
+    	<property name="serviceRegistrator" ref="zkServiceRegistrator" />
+    </nrpc:service>
      
 </beans>

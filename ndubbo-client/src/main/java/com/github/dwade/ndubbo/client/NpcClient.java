@@ -1,4 +1,4 @@
-package com.github.dwade.ndubbo.core.client;
+package com.github.dwade.ndubbo.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

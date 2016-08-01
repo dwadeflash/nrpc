@@ -1,9 +1,11 @@
-package com.github.dwade.ndubbo.core.server;
+package com.github.dwade.ndubbo.server;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.github.dwade.ndubbo.core.INpcServer;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -18,7 +20,7 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
-public class NpcServer implements ApplicationContextAware{
+public class NpcServer implements INpcServer, ApplicationContextAware {
 	
 	private static ApplicationContext applicationContext;
 	
@@ -38,7 +40,7 @@ public class NpcServer implements ApplicationContextAware{
 		NpcServer.applicationContext = applicationContext;
 	}
     
-    public void run() throws Exception {
+    public void start() throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -70,7 +72,7 @@ public class NpcServer implements ApplicationContextAware{
 	public static void main(String[] args) throws Exception {
        ClassPathXmlApplicationContext ac = new ClassPathXmlApplicationContext("classpath:nrpc-provider.xml");
        NpcServer server = (NpcServer) ac.getBean("server");
-       server.run();
+       server.start();
     }
 
 }
