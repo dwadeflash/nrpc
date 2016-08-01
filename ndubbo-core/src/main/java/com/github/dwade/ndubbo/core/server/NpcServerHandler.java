@@ -3,6 +3,8 @@ package com.github.dwade.ndubbo.core.server;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.github.dwade.ndubbo.core.InvokeInfo;
@@ -11,6 +13,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 public class NpcServerHandler extends ChannelInboundHandlerAdapter {
+	
+	private final static Logger logger = LoggerFactory.getLogger(NpcServerHandler.class);
 
 	private ApplicationContext applicationContext;
 	
@@ -47,12 +51,12 @@ public class NpcServerHandler extends ChannelInboundHandlerAdapter {
 	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		System.out.println("connected...");
+		logger.debug("connected...");
     }
 	
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		System.out.println("disconnected...");
+		logger.debug("disconnected...");
     }
 
 }

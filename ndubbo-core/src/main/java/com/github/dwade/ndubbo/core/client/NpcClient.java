@@ -1,5 +1,8 @@
 package com.github.dwade.ndubbo.core.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.dwade.ndubbo.core.InvokeInfo;
 import com.github.dwade.ndubbo.core.WrapppedResult;
 
@@ -17,6 +20,8 @@ import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
 public class NpcClient {
+	
+	private final static Logger logger = LoggerFactory.getLogger(NpcClient.class);
 	
 	private final String host;
 	private final int port;
@@ -54,7 +59,7 @@ public class NpcClient {
 				
 				@Override
 				public void operationComplete(ChannelFuture future) throws Exception {
-					System.out.println("connection closed");
+					logger.debug("connection closed");
 				}
 			});
 		} finally {

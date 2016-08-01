@@ -1,5 +1,8 @@
 package com.github.dwade.ndubbo.core.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.dwade.ndubbo.core.InvokeInfo;
 import com.github.dwade.ndubbo.core.WrapppedResult;
 
@@ -7,6 +10,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 public class NpcClientHandler extends ChannelInboundHandlerAdapter {
+	
+	private final static Logger logger = LoggerFactory.getLogger(NpcClientHandler.class);
 	
 	private InvokeInfo info;
 	
@@ -30,7 +35,7 @@ public class NpcClientHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		System.out.println("Result:" + msg);
+		logger.debug("Result:" + msg);
 		result.setResult(msg);
 		ctx.channel().close();
 	}

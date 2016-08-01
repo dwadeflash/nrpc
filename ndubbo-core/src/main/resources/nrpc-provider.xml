@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:nrpc="http://dwade.github.com/schema/nrpc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://dwade.github.com/schema/nrpc
-       http://dwade.github.com/schema/nrpc/nrpc.xsd">
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://dwade.github.com/schema/nrpc http://dwade.github.com/schema/nrpc/nrpc.xsd">
+       
+    <context:component-scan base-package="com.github.dwade.ndubbo.core" />
        
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     	<property name="locations">

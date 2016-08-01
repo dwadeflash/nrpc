@@ -18,8 +18,9 @@ public class ConsumerTest {
 	private IHelloWorld helloClient;
 
 	@Test
-	public void test() {
+	public void test() throws Exception {
 		System.out.println(helloClient.sayHello("test"));
 	}
+	
 
 }
