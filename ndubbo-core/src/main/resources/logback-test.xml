@@ -1,7 +1,17 @@
 <configuration>
-	<property name="LOG_HOME" value="/data/tomcat-amp/console/logs/" />
+	<property name="LOG_HOME" value="D:/logs/npc" />
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>[%d %-5level %thread %c:%L] %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<append>true</append>
+		<file>${LOG_HOME}/npc.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/rolling/npc-%d{yyyyMMdd}.log</fileNamePattern>
+		</rollingPolicy>
 		<encoder>
 			<pattern>[%d %-5level %thread %c:%L] %msg%n</pattern>
 		</encoder>
@@ -12,8 +22,9 @@
 	<logger name="net.sf.ehcache" level="warn" additivity="true" />
 	<logger name="freemarker" level="warn" additivity="true" />
 
-	<root level="debug">
+	<root level="dubug">
 		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
 	</root>
 
 </configuration>

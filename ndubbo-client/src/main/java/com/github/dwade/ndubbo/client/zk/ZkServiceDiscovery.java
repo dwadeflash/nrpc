@@ -13,8 +13,12 @@ import org.omg.CORBA.ServiceDetail;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.github.dwade.ndubbo.core.discover.IServiceDiscovery;
-import com.github.dwade.ndubbo.core.service.IHelloWorld;
 
+/**
+ * zookeeper服务发现实现
+ * @author mengwei
+ * 
+ */
 public class ZkServiceDiscovery implements IServiceDiscovery {
 	
 	@Value("${zookeeper.address}")
@@ -34,7 +38,7 @@ public class ZkServiceDiscovery implements IServiceDiscovery {
 				.basePath(interfaceName).build();
 		serviceDiscovery.start();
 
-		Collection<ServiceInstance> services = serviceDiscovery.queryForInstances(IHelloWorld.class.getName());
+		Collection<ServiceInstance> services = serviceDiscovery.queryForInstances(interfaceClass.getName());
 		if (services != null && services.size() > 0) {
 			int index = new Random().nextInt(services.size());
 			return (ServiceInstance) services.toArray()[index];
