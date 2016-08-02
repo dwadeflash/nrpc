@@ -3,8 +3,8 @@ package com.github.dwade.ndubbo.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.dwade.ndubbo.core.InvokeInfo;
-import com.github.dwade.ndubbo.core.WrapppedResult;
+import com.github.dwade.ndubbo.core.INpcClient;
+import com.github.dwade.ndubbo.core.InvokeContext;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -19,29 +19,15 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
-public class NpcClient {
+public class NpcClient implements INpcClient{
 	
 	private final static Logger logger = LoggerFactory.getLogger(NpcClient.class);
 	
-	private final String host;
-	private final int port;
-	
-	private InvokeInfo info;
-	
-	private WrapppedResult result;
-	
-	public NpcClient(String host, int port, InvokeInfo info, WrapppedResult result) {
-		this.host = host;
-		this.port = port;
-		this.info = info;
-		this.result = result;
-	}
-	
-	public void start() throws Exception {
+	public void start(InvokeContext context) throws Exception {
 		EventLoopGroup group = new NioEventLoopGroup();
 		try {
 			Bootstrap b = new Bootstrap();
-			b.group(group).channel(NioSocketChannel.class).remoteAddress(host, port)
+			b.group(group).channel(NioSocketChannel.class).remoteAddress(context.getHost(), context.getPort())
 					.handler(new ChannelInitializer<SocketChannel>() {
 
 						@Override
@@ -50,7 +36,7 @@ public class NpcClient {
 							pipeline.addLast("encoder", new ObjectEncoder());
 							pipeline.addLast("decoder",
 									new ObjectDecoder(ClassResolvers.cacheDisabled(this.getClass().getClassLoader())));
-					        pipeline.addLast("handler", new NpcClientHandler(info, result));
+					        pipeline.addLast("handler", new NpcClientHandler(context));
 						}
 					});
 			ChannelFuture connectFuture = b.connect().sync();
@@ -66,5 +52,5 @@ public class NpcClient {
 			group.shutdownGracefully();
 		}
 	}
-	
+
 }

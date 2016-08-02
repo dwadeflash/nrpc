@@ -6,16 +6,14 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.github.dwade.ndubbo.core.ServerUtils;
+import com.github.dwade.ndubbo.core.INpcServer;
 import com.github.dwade.ndubbo.core.register.IServiceRegistator;
 
 public class ProxyService<T> implements FactoryBean<T>, InitializingBean, ApplicationContextAware {
 	
-	private static ApplicationContext applicationContext;
+	private ApplicationContext applicationContext;
 	
 	private String interfaceName;
-	
-	private String ref;
 	
 	private Class<?> interfaceClass;
 	
@@ -38,17 +36,11 @@ public class ProxyService<T> implements FactoryBean<T>, InitializingBean, Applic
 		return true;
 	}
 
-	@SuppressWarnings({ "unchecked" })
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		interfaceClass = Class.forName(interfaceName);
-		target = (T) applicationContext.getBean(ref);
-		serviceRegistrator.registerService(interfaceClass, ServerUtils.getServicePort());
-	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		ProxyService.applicationContext = applicationContext;
+		INpcServer server = applicationContext.getBean(INpcServer.class);
+		serviceRegistrator.registerService(interfaceClass, server.getPort());
 	}
 
 	public String getInterfaceName() {
@@ -58,13 +50,13 @@ public class ProxyService<T> implements FactoryBean<T>, InitializingBean, Applic
 	public void setInterfaceName(String interfaceName) {
 		this.interfaceName = interfaceName;
 	}
-
-	public String getRef() {
-		return ref;
+	
+	public T getTarget() {
+		return target;
 	}
 
-	public void setRef(String ref) {
-		this.ref = ref;
+	public void setTarget(T target) {
+		this.target = target;
 	}
 
 	public IServiceRegistator getServiceRegistrator() {
@@ -73,6 +65,11 @@ public class ProxyService<T> implements FactoryBean<T>, InitializingBean, Applic
 
 	public void setServiceRegistrator(IServiceRegistator serviceRegistrator) {
 		this.serviceRegistrator = serviceRegistrator;
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 
 }

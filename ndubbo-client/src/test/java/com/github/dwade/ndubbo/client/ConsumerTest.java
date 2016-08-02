@@ -1,4 +1,4 @@
-package dwade;
+package com.github.dwade.ndubbo.client;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,5 +22,4 @@ public class ConsumerTest {
 		System.out.println(helloClient.sayHello("test"));
 	}
 	
-
 }

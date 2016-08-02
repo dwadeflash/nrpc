@@ -21,10 +21,6 @@ public class ServiceBeanDefinitionParser extends AbstractSingleBeanDefinitionPar
 		if(StringUtils.hasText(interfaceName)) {
 			bean.addPropertyValue("interfaceName", interfaceName);
 		}
-		String ref = element.getAttribute("ref");
-		if(StringUtils.hasText(ref)) {
-			bean.addPropertyValue("ref", ref);
-		}
 		parseProperties(element.getChildNodes(), bean);
     }
 

@@ -8,8 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.github.dwade.ndubbo.core.INpcClient;
+import com.github.dwade.ndubbo.core.InvokeContext;
 import com.github.dwade.ndubbo.core.InvokeInfo;
-import com.github.dwade.ndubbo.core.WrapppedResult;
 import com.github.dwade.ndubbo.core.discover.IServiceDiscovery;
 
 import net.sf.cglib.proxy.Enhancer;
@@ -24,19 +25,21 @@ public class ProxyInterface<T> implements MethodInterceptor, FactoryBean<T>, Ini
 	
 	private transient Class<?> interfaceClass;
 	
-	private IServiceDiscovery serverDiscovery;
+	private IServiceDiscovery serviceDiscovery;
+	
+	private INpcClient client;
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes" })
 	@Override
 	public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
 		InvokeInfo info = new InvokeInfo(interfaceName, method.getName(), args);
-		WrapppedResult result = new WrapppedResult();
 		
-		ServiceInstance service = serverDiscovery.discoverService(interfaceClass);
+		ServiceInstance service = serviceDiscovery.discoverService(interfaceClass);
 		
 	    if(service != null) {
-	    	new NpcClient(service.getAddress(), service.getPort(), info, result).start();
-			return result.getResult();
+	    	InvokeContext context = new InvokeContext(service.getAddress(), service.getPort(), info);
+	    	client.start(context);
+			return context.getResult();
 	    }
 	    throw new Exception("there is no applicable service!");
 	}
@@ -73,6 +76,14 @@ public class ProxyInterface<T> implements MethodInterceptor, FactoryBean<T>, Ini
 
 	public void setInterfaceName(String interfaceName) {
 		this.interfaceName = interfaceName;
+	}
+
+	public void setClient(INpcClient client) {
+		this.client = client;
+	}
+
+	public void setServiceDiscovery(IServiceDiscovery serviceDiscovery) {
+		this.serviceDiscovery = serviceDiscovery;
 	}
 	
 }

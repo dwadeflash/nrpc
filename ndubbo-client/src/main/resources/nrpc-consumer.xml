@@ -9,7 +9,7 @@
        http://dwade.github.com/schema/nrpc http://dwade.github.com/schema/nrpc/nrpc.xsd">
        
     <context:component-scan base-package="com.github.dwade.ndubbo.core" />
-       
+    
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     	<property name="locations">
     		<list>
@@ -17,20 +17,14 @@
     		</list>
     	</property>
     </bean>
+       
+    <bean id="client" class="com.github.dwade.ndubbo.client.NpcClient" />
     
-    <bean class="com.github.dwade.ndubbo.core.ServerUtils" />
-    
-    <bean id="helloService" class="com.github.dwade.ndubbo.core.service.HelloWorld" />
+    <bean id="zkServiceDiscovery" class="com.github.dwade.ndubbo.client.zk.ZkServiceDiscovery" />
 
-    <bean id="server" class="com.github.dwade.ndubbo.server.NpcServer">
-    	<property name="port" value="8090" />
-    </bean>
-	
-	<bean id="zkServiceRegistrator" class="com.github.dwade.ndubbo.server.zk.ZkServiceRegistrator" />    
-    
-    <nrpc:service id="hello" interface="com.github.dwade.ndubbo.core.service.IHelloWorld">
-    	<property name="target" ref="helloService" />
-    	<property name="serviceRegistrator" ref="zkServiceRegistrator" />
-    </nrpc:service>
+    <nrpc:interface id="helloClient" interface="com.github.dwade.ndubbo.core.service.IHelloWorld">
+    	<property name="client" ref="client" />
+    	<property name="serviceDiscovery" ref="zkServiceDiscovery" />
+    </nrpc:interface>
      
 </beans>
