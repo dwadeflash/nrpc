@@ -22,7 +22,7 @@
 	<logger name="net.sf.ehcache" level="warn" additivity="true" />
 	<logger name="freemarker" level="warn" additivity="true" />
 
-	<root level="dubug">
+	<root level="debug">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
 	</root>

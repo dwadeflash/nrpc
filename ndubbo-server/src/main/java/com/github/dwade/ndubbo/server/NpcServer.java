@@ -8,7 +8,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.github.dwade.ndubbo.core.INpcServer;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
@@ -43,29 +42,21 @@ public class NpcServer implements INpcServer, ApplicationContextAware {
     public void start() throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
         EventLoopGroup workerGroup = new NioEventLoopGroup();
-        try {
-            ServerBootstrap b = new ServerBootstrap(); // (2)
-            b.group(bossGroup, workerGroup)
-             .channel(NioServerSocketChannel.class) // (3)
-             .childHandler(new ChannelInitializer<SocketChannel>() { // (4)
-                 @Override
-						public void initChannel(SocketChannel ch) throws Exception {
-                	 		ChannelPipeline pipeline = ch.pipeline();
-							pipeline.addLast("encoder", new ObjectEncoder());
-							pipeline.addLast("decoder",
-									new ObjectDecoder(ClassResolvers.cacheDisabled(this.getClass().getClassLoader())));
-							pipeline.addLast("handler", new NpcServerHandler(applicationContext));
-						}
-             })
-             .option(ChannelOption.SO_BACKLOG, 128)          // (5)
-             .childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
+		ServerBootstrap b = new ServerBootstrap(); // (2)
+		b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class) // (3)
+				.childHandler(new ChannelInitializer<SocketChannel>() { // (4)
+					@Override
+					public void initChannel(SocketChannel ch) throws Exception {
+						ChannelPipeline pipeline = ch.pipeline();
+						pipeline.addLast("encoder", new ObjectEncoder());
+						pipeline.addLast("decoder",
+								new ObjectDecoder(ClassResolvers.cacheDisabled(this.getClass().getClassLoader())));
+						pipeline.addLast("handler", new NpcServerHandler(applicationContext));
+					}
+				}).option(ChannelOption.SO_BACKLOG, 128) // (5)
+				.childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
 
-            ChannelFuture f = b.bind(port).sync(); // (7)
-            f.channel().closeFuture().sync();
-        } finally {
-            workerGroup.shutdownGracefully();
-            bossGroup.shutdownGracefully();
-        }
+		b.bind(port);
     }
 
     @SuppressWarnings("resource")

@@ -1,9 +1,12 @@
 package com.github.dwade.ndubbo.client;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.dwade.ndubbo.core.InvokeContext;
+import com.github.dwade.ndubbo.core.WrapppedResult;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -12,12 +15,12 @@ public class NpcClientHandler extends ChannelInboundHandlerAdapter {
 	
 	private final static Logger logger = LoggerFactory.getLogger(NpcClientHandler.class);
 	
-	private InvokeContext context;
+	private Map<String, InvokeContext> contexts;
 	
-	public NpcClientHandler(InvokeContext context) {
-		this.context = context;
+	public NpcClientHandler(Map<String, InvokeContext> contexts) {
+		this.contexts = contexts;
 	}
-
+	
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 		cause.printStackTrace();
@@ -25,14 +28,14 @@ public class NpcClientHandler extends ChannelInboundHandlerAdapter {
 	}
 	
 	@Override
-	public void channelActive(ChannelHandlerContext ctx) {
-		ctx.channel().writeAndFlush(context.getInfo());
-	}
-
-	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
 		logger.debug("Result:" + msg);
-		context.setResult(msg);
+		WrapppedResult result = (WrapppedResult) msg;
+		InvokeContext context = contexts.get(result.getId());
+//		synchronized (context) {
+			context.setResult(result.getResult());
+//			context.notify();
+//		}
 		ctx.channel().close();
 	}
 

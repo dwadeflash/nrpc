@@ -18,6 +18,7 @@ public class ServerTest {
 	@Test
 	public void startServer() throws Exception {
 		server.start();
+		System.in.read();
 	}
 
 }

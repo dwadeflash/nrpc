@@ -48,4 +48,11 @@ public class InvokeContext {
 		this.result.setResult(result);
 	}
 	
+	public String getUrl() {
+		return host + ":" + port;
+	}
+	
+	public String getId() {
+		return info.getId();
+	}
 }

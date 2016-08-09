@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.github.dwade.ndubbo.core.InvokeInfo;
+import com.github.dwade.ndubbo.core.WrapppedResult;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -37,7 +38,10 @@ public class NpcServerHandler extends ChannelInboundHandlerAdapter {
 		for (Method method : interfaceClass.getDeclaredMethods()) {
 			if (info.getMethodName().equals(method.getName())) {
 				Object result = method.invoke(bean, info.getArgs());
-				ctx.channel().writeAndFlush(result);
+				WrapppedResult wrapppedResult = new WrapppedResult();
+				wrapppedResult.setId(info.getId());
+				wrapppedResult.setResult(result);
+				ctx.channel().writeAndFlush(wrapppedResult);
 				break;
 			}
 		}

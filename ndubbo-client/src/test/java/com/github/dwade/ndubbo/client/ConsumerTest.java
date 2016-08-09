@@ -1,9 +1,5 @@
 package com.github.dwade.ndubbo.client;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,23 +19,12 @@ public class ConsumerTest {
 
 	@Test
 	public void test() throws Exception {
-		CountDownLatch latch = new CountDownLatch(1000);
-		ExecutorService excutor = Executors.newFixedThreadPool(100);
 		long begin = System.currentTimeMillis();
-		for(int i=0;i<1000;i++) {
-			excutor.submit(new Runnable() {
-				
-				@Override
-				public void run() {
-					helloClient.sayHello("test");
-					latch.countDown();
-				}
-			});
-		}
-		latch.await();
+//		for(int i=0;i<13;i++) {
+			System.out.println(helloClient.sayHello("test"));
+//		}
 		long end = System.currentTimeMillis();
 		System.out.println(end - begin);
-		excutor.shutdown();
 	}
 	
 }

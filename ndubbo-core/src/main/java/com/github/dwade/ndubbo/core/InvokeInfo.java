@@ -1,6 +1,7 @@
 package com.github.dwade.ndubbo.core;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class InvokeInfo implements Serializable{
 	
@@ -8,6 +9,8 @@ public class InvokeInfo implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private String id;
 
 	private String interfaceName;
 	
@@ -16,9 +19,18 @@ public class InvokeInfo implements Serializable{
 	private Object[] args;
 	
 	public InvokeInfo(String interfaceName, String methodName, Object[] args) {
+		this.id = UUID.randomUUID().toString();
 		this.interfaceName = interfaceName;
 		this.methodName = methodName;
 		this.args = args;
+	}
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getInterfaceName() {
