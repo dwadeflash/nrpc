@@ -23,6 +23,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.FutureListener;
 
 public class NpcClient implements INpcClient, DisposableBean {
 	
@@ -39,20 +41,25 @@ public class NpcClient implements INpcClient, DisposableBean {
 	private Map<String, CountDownLatch> latches = new ConcurrentHashMap<String, CountDownLatch>();
 	
 	public void start(InvokeContext context, CountDownLatch latch) throws Exception {
+		logger.debug("start rpc...1");
 		boolean init = false;
 		contexts.put(context.getId(), context);
 		latches.put(context.getId(), latch);
 		Bootstrap bootstrap = bootstraps.get(context.getUrl());
 		Channel channel = channels.get(context.getUrl());
 		if(bootstrap == null) {
+			logger.debug("start rpc...2");
 			synchronized (NpcClient.class) {
+				logger.debug("start rpc...3");
 				if(bootstraps.get(context.getUrl()) == null) {
+					logger.debug("start rpc...4");
 					bootstrap = new Bootstrap();
 					bootstraps.put(context.getUrl(), bootstrap);
 					init = true;
 				}
 			}
 			if (init) {
+				logger.debug("start rpc...5");
 				bootstrap.group(group).channel(NioSocketChannel.class);
 				bootstrap.handler(new ChannelInitializer<SocketChannel>() {
 
@@ -74,7 +81,15 @@ public class NpcClient implements INpcClient, DisposableBean {
 		}
 		bootstrap = bootstraps.get(context.getUrl());
 		channel = channels.get(context.getUrl());
-		channel.writeAndFlush(context.getInfo());
+		logger.debug("start rpc...6");
+		channel.writeAndFlush(context.getInfo()).addListener(new FutureListener() {
+
+			@Override
+			public void operationComplete(Future future) throws Exception {
+				System.out.println("finished send request");
+			}
+		});
+		logger.debug("start rpc...7");
 	}
 
 	@Override

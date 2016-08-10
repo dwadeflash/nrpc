@@ -17,7 +17,7 @@ import com.github.dwade.ndubbo.core.service.IHelloWorld;
 @ContextConfiguration("classpath:nrpc-consumer.xml")
 public class ConsumerTest {
 	
-	private final int COUNT = 100;
+	private final int COUNT = 2;
 
 	@Autowired
 	@Qualifier("helloClient")
@@ -29,12 +29,12 @@ public class ConsumerTest {
 		CountDownLatch latch = new CountDownLatch(COUNT);
 		long begin = System.currentTimeMillis();
 		for (int i = 0; i < COUNT; i++) {
-//			executor.submit(new Runnable() {
-//				public void run() {
+			executor.submit(new Runnable() {
+				public void run() {
 					helloClient.sayHello("test");
 					latch.countDown();
-//				}
-//			});
+				}
+			});
 		}
 		latch.await();
 		long end = System.currentTimeMillis();

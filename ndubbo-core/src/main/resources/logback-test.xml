@@ -23,7 +23,7 @@
 	<logger name="net.sf.ehcache" level="warn" additivity="true" />
 	<logger name="io.netty" level="warn" additivity="true" />
 
-	<root level="info">
+	<root level="debug">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
 	</root>
