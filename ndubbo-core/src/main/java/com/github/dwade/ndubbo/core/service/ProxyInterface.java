@@ -1,6 +1,7 @@
 package com.github.dwade.ndubbo.core.service;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.slf4j.Logger;
@@ -38,7 +39,9 @@ public class ProxyInterface<T> implements MethodInterceptor, FactoryBean<T>, Ini
 		
 	    if(service != null) {
 	    	InvokeContext context = new InvokeContext(service.getAddress(), service.getPort(), info);
-	    	client.start(context);
+	    	CountDownLatch latch = new CountDownLatch(1);
+	    	client.start(context, latch);
+	    	latch.await();
 			return context.getResult();
 	    }
 	    throw new Exception("there is no applicable service!");

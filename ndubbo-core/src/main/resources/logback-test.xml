@@ -3,7 +3,7 @@
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>[%d %-5level %thread %c:%L] %msg%n</pattern>
+			<pattern>[%d %-5level] %msg [%thread %c:%L]%n</pattern>
 		</encoder>
 	</appender>
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -13,16 +13,17 @@
 			<fileNamePattern>${LOG_HOME}/rolling/npc-%d{yyyyMMdd}.log</fileNamePattern>
 		</rollingPolicy>
 		<encoder>
-			<pattern>[%d %-5level %thread %c:%L] %msg%n</pattern>
+			<pattern>[%d %-5level] %msg [%thread %c:%L]%n</pattern>
 		</encoder>
 	</appender>
 
+	<logger name="org.springframework" level="warn" additivity="true" />
 	<logger name="org.apache" level="warn" additivity="true" />
 	<logger name="org.hibernate" level="error" additivity="true" />
 	<logger name="net.sf.ehcache" level="warn" additivity="true" />
-	<logger name="freemarker" level="warn" additivity="true" />
+	<logger name="io.netty" level="warn" additivity="true" />
 
-	<root level="debug">
+	<root level="info">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
 	</root>

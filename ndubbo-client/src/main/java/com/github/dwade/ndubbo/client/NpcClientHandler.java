@@ -1,6 +1,7 @@
 package com.github.dwade.ndubbo.client;
 
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,11 @@ public class NpcClientHandler extends ChannelInboundHandlerAdapter {
 	
 	private Map<String, InvokeContext> contexts;
 	
-	public NpcClientHandler(Map<String, InvokeContext> contexts) {
+	private Map<String, CountDownLatch> latches;
+	
+	public NpcClientHandler(Map<String, InvokeContext> contexts, Map<String, CountDownLatch> latches) {
 		this.contexts = contexts;
+		this.latches = latches;
 	}
 	
 	@Override
@@ -32,11 +36,10 @@ public class NpcClientHandler extends ChannelInboundHandlerAdapter {
 		logger.debug("Result:" + msg);
 		WrapppedResult result = (WrapppedResult) msg;
 		InvokeContext context = contexts.get(result.getId());
-//		synchronized (context) {
-			context.setResult(result.getResult());
-//			context.notify();
-//		}
-		ctx.channel().close();
+		context.setResult(result.getResult());
+		latches.get(context.getId()).countDown();
+		latches.remove(context.getId());
+		contexts.remove(context.getId());
 	}
 
 }

@@ -1,7 +1,14 @@
 package com.github.dwade.ndubbo.core;
 
-public class WrapppedResult {
+import java.io.Serializable;
+
+public class WrapppedResult implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String id;
 	
 	private Object result;
