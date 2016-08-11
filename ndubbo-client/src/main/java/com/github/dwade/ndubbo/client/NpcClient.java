@@ -1,5 +1,6 @@
 package com.github.dwade.ndubbo.client;
 
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -34,7 +35,7 @@ public class NpcClient implements INpcClient, DisposableBean {
 
 	private Map<String, Bootstrap> bootstraps = new ConcurrentHashMap<String, Bootstrap>();
 	
-	private Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>();
+	private volatile Map<String, Channel> channels = new Hashtable<String, Channel>();
 	
 	private Map<String, InvokeContext> contexts = new ConcurrentHashMap<String, InvokeContext>();
 	
@@ -47,41 +48,42 @@ public class NpcClient implements INpcClient, DisposableBean {
 		latches.put(context.getId(), latch);
 		Bootstrap bootstrap = bootstraps.get(context.getUrl());
 		Channel channel = channels.get(context.getUrl());
-		if(bootstrap == null) {
+		if (bootstrap == null && channel == null) {
 			logger.debug("start rpc...2");
 			synchronized (NpcClient.class) {
 				logger.debug("start rpc...3");
-				if(bootstraps.get(context.getUrl()) == null) {
+				if (bootstraps.get(context.getUrl()) == null) {
 					logger.debug("start rpc...4");
 					bootstrap = new Bootstrap();
 					bootstraps.put(context.getUrl(), bootstrap);
 					init = true;
 				}
-			}
-			if (init) {
-				logger.debug("start rpc...5");
-				bootstrap.group(group).channel(NioSocketChannel.class);
-				bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+				if (init) {
+					logger.debug("start rpc...5");
+					bootstrap.group(group).channel(NioSocketChannel.class);
+					bootstrap.handler(new ChannelInitializer<SocketChannel>() {
 
-					@Override
-					protected void initChannel(SocketChannel ch) throws Exception {
-						ChannelPipeline pipeline = ch.pipeline();
-						pipeline.addLast("encoder", new ObjectEncoder());
-						pipeline.addLast("decoder",
-								new ObjectDecoder(ClassResolvers.cacheDisabled(this.getClass().getClassLoader())));
-						pipeline.addLast("handler", new NpcClientHandler(contexts, latches));
-					}
-				});
-				ChannelFuture connectFuture = bootstrap.connect(context.getHost(), context.getPort()).sync();
-				channel = connectFuture.channel();
-				bootstraps.put(context.getUrl(), bootstrap);
-				channels.put(context.getUrl(), channel);
-				contexts.put(context.getId(), context);
+						@Override
+						protected void initChannel(SocketChannel ch) throws Exception {
+							ChannelPipeline pipeline = ch.pipeline();
+							pipeline.addLast("encoder", new ObjectEncoder());
+							pipeline.addLast("decoder",
+									new ObjectDecoder(ClassResolvers.cacheDisabled(this.getClass().getClassLoader())));
+							pipeline.addLast("handler", new NpcClientHandler(contexts, latches));
+						}
+					});
+					ChannelFuture connectFuture = bootstrap.connect(context.getHost(), context.getPort()).sync();
+					channel = connectFuture.channel();
+					bootstraps.put(context.getUrl(), bootstrap);
+					channels.put(context.getUrl(), channel);
+					contexts.put(context.getId(), context);
+				}
 			}
 		}
 		bootstrap = bootstraps.get(context.getUrl());
 		channel = channels.get(context.getUrl());
 		logger.debug("start rpc...6");
+		logger.debug(Boolean.valueOf(channel == null).toString());
 		channel.writeAndFlush(context.getInfo()).addListener(new FutureListener() {
 
 			@Override

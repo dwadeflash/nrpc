@@ -17,7 +17,7 @@ import com.github.dwade.ndubbo.core.service.IHelloWorld;
 @ContextConfiguration("classpath:nrpc-consumer.xml")
 public class ConsumerTest {
 	
-	private final int COUNT = 2;
+	private final int COUNT = 100;
 
 	@Autowired
 	@Qualifier("helloClient")
@@ -31,8 +31,13 @@ public class ConsumerTest {
 		for (int i = 0; i < COUNT; i++) {
 			executor.submit(new Runnable() {
 				public void run() {
-					helloClient.sayHello("test");
-					latch.countDown();
+					try {
+						System.out.println(helloClient.sayHello1("test"));
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						latch.countDown();
+					}
 				}
 			});
 		}

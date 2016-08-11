@@ -40,7 +40,12 @@ public class ProxyInterface<T> implements MethodInterceptor, FactoryBean<T>, Ini
 	    if(service != null) {
 	    	InvokeContext context = new InvokeContext(service.getAddress(), service.getPort(), info);
 	    	CountDownLatch latch = new CountDownLatch(1);
-	    	client.start(context, latch);
+	    	try {
+	    		client.start(context, latch);
+	    	} catch (Exception e) {
+	    		latch.countDown();
+	    		throw e;
+	    	}
 	    	latch.await();
 			return context.getResult();
 	    }
