@@ -12,16 +12,21 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.dwade.nrpc.core.service.IHelloWorld;
+import com.github.dwade.nrpc.core.service.IWorldHello;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:nrpc-consumer.xml")
 public class ConsumerTest {
 	
-	private final int COUNT = 100;
+    private final int COUNT = 1;
 
 	@Autowired
-	@Qualifier("helloClient")
-	private IHelloWorld helloClient;
+	@Qualifier("helloClient1")
+	private IHelloWorld helloClient1;
+	
+	@Autowired
+    @Qualifier("helloClient2")
+    private IWorldHello helloClient2;
 
 	public void testMultiThread() throws Exception {
 		ExecutorService executor = Executors.newFixedThreadPool(COUNT);
@@ -31,7 +36,7 @@ public class ConsumerTest {
 			executor.submit(new Runnable() {
 				public void run() {
 					try {
-						System.out.println(helloClient.sayHello1("test"));
+						System.out.println(helloClient1.sayHello1("test"));
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
@@ -45,13 +50,14 @@ public class ConsumerTest {
 		System.out.println(end - begin);
 	}
 	
-	@Test
+    @Test
     public void testSingleThread() throws Exception {
         CountDownLatch latch = new CountDownLatch(COUNT);
         long begin = System.currentTimeMillis();
         for (int i = 0; i < COUNT; i++) {
             try {
-                System.out.println(helloClient.sayHello1("test"));
+                helloClient1.sayHello1("test");
+                // System.out.println(helloClient2.sayHi("test"));
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

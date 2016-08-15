@@ -34,7 +34,8 @@ public class ZkServiceRegistrator implements IServiceRegistator {
 		String interfaceName = interfaceClass.getName();
 		ServiceInstance serviceInstance = ServiceInstance.builder().uriSpec(new UriSpec("{scheme}://{address}:{port}"))
 				.address(InetAddress.getLocalHost().getHostAddress()).port(port).name(interfaceName).build();
-		ServiceDiscovery<?> sd = ServiceDiscoveryBuilder.builder(interfaceClass).basePath(interfaceName)
+        ServiceDiscovery<?> sd = ServiceDiscoveryBuilder.builder(interfaceClass)
+                .basePath("/nrpc/examples")
 				.client(curatorFramework).build();
 		sd.registerService(serviceInstance);
 		sd.start();

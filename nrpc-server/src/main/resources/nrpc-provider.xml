@@ -20,7 +20,8 @@
     
     <bean class="com.github.dwade.nrpc.core.ServerUtils" />
     
-    <bean id="helloService" class="com.github.dwade.nrpc.core.service.HelloWorld" />
+    <bean id="helloService1" class="com.github.dwade.nrpc.core.service.HelloWorld" />
+    <bean id="helloService2" class="com.github.dwade.nrpc.core.service.WorldHello" />
 
     <bean id="server" class="com.github.dwade.nrpc.server.NrpcServer">
     	<property name="port" value="8090" />
@@ -28,9 +29,14 @@
 	
 	<bean id="zkServiceRegistrator" class="com.github.dwade.nrpc.server.zk.ZkServiceRegistrator" />    
     
-    <nrpc:service id="hello" interface="com.github.dwade.nrpc.core.service.IHelloWorld">
-    	<property name="target" ref="helloService" />
+    <nrpc:service id="hello1" interface="com.github.dwade.nrpc.core.service.IHelloWorld">
+    	<property name="target" ref="helloService1" />
     	<property name="serviceRegistrator" ref="zkServiceRegistrator" />
+    </nrpc:service>
+    
+    <nrpc:service id="hello2" interface="com.github.dwade.nrpc.core.service.IWorldHello">
+        <property name="target" ref="helloService2" />
+        <property name="serviceRegistrator" ref="zkServiceRegistrator" />
     </nrpc:service>
      
 </beans>

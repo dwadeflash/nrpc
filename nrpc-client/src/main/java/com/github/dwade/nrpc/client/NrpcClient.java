@@ -41,7 +41,8 @@ public class NrpcClient implements INrpcClient, DisposableBean {
 	
 	private Map<String, CountDownLatch> latches = new ConcurrentHashMap<String, CountDownLatch>();
 	
-	public void start(InvokeContext context, CountDownLatch latch) throws Exception {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void start(InvokeContext context, CountDownLatch latch) throws Exception {
 		logger.debug("start rpc...1");
 		boolean init = false;
 		contexts.put(context.getId(), context);

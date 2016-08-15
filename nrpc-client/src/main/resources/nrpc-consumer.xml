@@ -22,9 +22,14 @@
     
     <bean id="zkServiceDiscovery" class="com.github.dwade.nrpc.client.zk.ZkServiceDiscovery" />
 
-    <nrpc:interface id="helloClient" interface="com.github.dwade.nrpc.core.service.IHelloWorld">
+    <nrpc:interface id="helloClient1" interface="com.github.dwade.nrpc.core.service.IHelloWorld">
     	<property name="client" ref="client" />
     	<property name="serviceDiscovery" ref="zkServiceDiscovery" />
+    </nrpc:interface>
+    
+    <nrpc:interface id="helloClient2" interface="com.github.dwade.nrpc.core.service.IWorldHello">
+        <property name="client" ref="client" />
+        <property name="serviceDiscovery" ref="zkServiceDiscovery" />
     </nrpc:interface>
      
 </beans>
