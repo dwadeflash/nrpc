@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:nrpc="http://dwade.github.com/schema/nrpc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://dwade.github.com/schema/nrpc http://dwade.github.com/schema/nrpc/nrpc.xsd">
+       
+    <context:component-scan base-package="com.github.dwade.nrpc.core" />
+       
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="locations">
+    		<list>
+    			<value>classpath:config/config.properties</value>
+    		</list>
+    	</property>
+    </bean>
+    
+    <bean class="com.github.dwade.nrpc.core.ServerUtils" />
+    
+    <bean id="helloService" class="com.github.dwade.nrpc.core.service.HelloWorld" />
+
+    <bean id="server" class="com.github.dwade.nrpc.server.NrpcServer">
+    	<property name="port" value="8090" />
+    </bean>
+	
+	<bean id="zkServiceRegistrator" class="com.github.dwade.nrpc.server.zk.ZkServiceRegistrator" />    
+    
+    <nrpc:service id="hello" interface="com.github.dwade.nrpc.core.service.IHelloWorld">
+    	<property name="target" ref="helloService" />
+    	<property name="serviceRegistrator" ref="zkServiceRegistrator" />
+    </nrpc:service>
+     
+</beans>

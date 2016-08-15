@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:nrpc="http://dwade.github.com/schema/nrpc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://dwade.github.com/schema/nrpc http://dwade.github.com/schema/nrpc/nrpc.xsd">
+       
+    <context:component-scan base-package="com.github.dwade.nrpc.core" />
+    
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="locations">
+    		<list>
+    			<value>classpath:config/config.properties</value>
+    		</list>
+    	</property>
+    </bean>
+       
+    <bean id="client" class="com.github.dwade.nrpc.client.NrpcClient" />
+    
+    <bean id="zkServiceDiscovery" class="com.github.dwade.nrpc.client.zk.ZkServiceDiscovery" />
+
+    <nrpc:interface id="helloClient" interface="com.github.dwade.nrpc.core.service.IHelloWorld">
+    	<property name="client" ref="client" />
+    	<property name="serviceDiscovery" ref="zkServiceDiscovery" />
+    </nrpc:interface>
+     
+</beans>
