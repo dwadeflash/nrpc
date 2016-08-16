@@ -33,7 +33,6 @@ public class NrpcClientHandler extends ChannelInboundHandlerAdapter {
 	
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		logger.debug("Result:" + msg);
 		WrapppedResult result = (WrapppedResult) msg;
 		InvokeContext context = contexts.get(result.getId());
 		context.setResult(result.getResult());

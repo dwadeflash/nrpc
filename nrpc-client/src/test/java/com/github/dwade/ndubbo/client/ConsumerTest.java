@@ -18,7 +18,7 @@ import com.github.dwade.nrpc.core.service.IWorldHello;
 @ContextConfiguration("classpath:nrpc-consumer.xml")
 public class ConsumerTest {
 	
-    private final int COUNT = 1;
+    private final int COUNT = 5000;
 
 	@Autowired
 	@Qualifier("helloClient1")
@@ -28,15 +28,16 @@ public class ConsumerTest {
     @Qualifier("helloClient2")
     private IWorldHello helloClient2;
 
+	@Test
 	public void testMultiThread() throws Exception {
-		ExecutorService executor = Executors.newFixedThreadPool(COUNT);
+		ExecutorService executor = Executors.newFixedThreadPool(COUNT/1000);
 		CountDownLatch latch = new CountDownLatch(COUNT);
 		long begin = System.currentTimeMillis();
 		for (int i = 0; i < COUNT; i++) {
 			executor.submit(new Runnable() {
 				public void run() {
 					try {
-						System.out.println(helloClient1.sayHello1("test"));
+						helloClient1.sayHello1("test");
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
@@ -50,8 +51,8 @@ public class ConsumerTest {
 		System.out.println(end - begin);
 	}
 	
-    @Test
     public void testSingleThread() throws Exception {
+    	Thread.sleep(1000);
         CountDownLatch latch = new CountDownLatch(COUNT);
         long begin = System.currentTimeMillis();
         for (int i = 0; i < COUNT; i++) {

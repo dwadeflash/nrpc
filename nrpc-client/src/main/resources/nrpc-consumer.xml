@@ -18,9 +18,11 @@
     	</property>
     </bean>
        
-    <bean id="client" class="com.github.dwade.nrpc.client.NrpcClient" />
-    
     <bean id="zkServiceDiscovery" class="com.github.dwade.nrpc.client.zk.ZkServiceDiscovery" />
+    
+    <bean id="client" class="com.github.dwade.nrpc.client.NrpcClient">
+    	<property name="serviceDiscovery" ref="zkServiceDiscovery" />
+    </bean>
 
     <nrpc:interface id="helloClient1" interface="com.github.dwade.nrpc.core.service.IHelloWorld">
     	<property name="client" ref="client" />
