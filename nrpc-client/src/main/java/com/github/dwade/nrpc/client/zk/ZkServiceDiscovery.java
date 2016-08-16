@@ -8,7 +8,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -50,7 +51,7 @@ public class ZkServiceDiscovery implements IServiceDiscovery, InitializingBean, 
     
     private Timer timer = new Timer();
     
-    private Lock lock = new ReentrantLock();
+    private ReadWriteLock lock = new ReentrantReadWriteLock();
 
 	@Override
 	public ServiceInstance<?> discoverService(Class<?> interfaceClass) throws Exception {
@@ -64,11 +65,12 @@ public class ZkServiceDiscovery implements IServiceDiscovery, InitializingBean, 
 	
 	@Override
 	public Map<String, Collection<ServiceInstance>> getServices() {
+		Lock readLock = lock.readLock();
 		try {
-			lock.lock();
+			readLock.lock();
 			return serviceList;
 		} finally {
-			lock.unlock();
+			readLock.unlock();
 		}
 	}
 	
@@ -101,8 +103,9 @@ public class ZkServiceDiscovery implements IServiceDiscovery, InitializingBean, 
 		@Override
 		public void run() {
 			logger.debug("discovering services...");
+			Lock writeLock = lock.writeLock();
 			try {
-				lock.lock();
+				writeLock.lock();
 				serviceList.clear();
 				Iterator it = serviceDiscovery.queryForNames().iterator();
 				while (it.hasNext()) {
@@ -113,7 +116,7 @@ public class ZkServiceDiscovery implements IServiceDiscovery, InitializingBean, 
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			} finally {
-				lock.unlock();
+				writeLock.unlock();
 			}
 		}
 	}
